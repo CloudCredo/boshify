@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+require 'boshify'
+
+# Boshify generates BOSH releases
+module Boshify
+  cr = CommandRunner.new
+  fs = Filesystem.new
+  dl = Downloader.new(filesystem: fs)
+  release_creator = ReleaseCreator.new(filesystem: fs,
+                                       release_dir: Dir.pwd,
+                                       cmd_runner: cr)
+  pkg_source = UbuntuPackages.new(downloader: dl, cmd_runner: cr)
+  converter = PackageConverter.new(package_source: pkg_source,
+                                   downloader: dl,
+                                   release_creator: release_creator)
+  cmd_line = CommandLine.new(program_name: $PROGRAM_NAME,
+                             package_converter: converter)
+  result = cmd_line.run(ARGV)
+  puts result[:stdout]
+  exit result[:exit_code]
+end
