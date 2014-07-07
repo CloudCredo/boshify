@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 require 'boshify'
+require 'bosh_lite_helpers'
 
 # Boshify generates BOSH releases
 module Boshify
-  cr = CommandRunner.new
+  cr = BoshLiteHelpers::CommandRunner.new
   fs = Filesystem.new
   dl = Downloader.new(filesystem: fs)
   release_creator = ReleaseCreator.new(filesystem: fs,
@@ -16,6 +17,7 @@ module Boshify
   cmd_line = CommandLine.new(program_name: $PROGRAM_NAME,
                              package_converter: converter)
   result = cmd_line.run(ARGV)
-  puts result[:stdout]
+  puts result[:stdout] unless result[:stdout].empty?
+  STDERR.puts result[:stderr] unless result[:stderr].empty?
   exit result[:exit_code]
 end

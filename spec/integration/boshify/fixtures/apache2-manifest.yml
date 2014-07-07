@@ -1,0 +1,38 @@
+director_uuid: 49710e54-18d9-48a1-ad27-188ca9048815
+name: apache2-warden
+releases:
+- name: apache2
+  version: latest
+compilation:
+  workers: 1
+  network: default
+  cloud_properties: {}
+networks:
+- name: default
+  subnets:
+  - range: 10.244.2.228/30
+    static:
+    - 10.244.2.230
+    cloud_properties: {}
+resource_pools:
+- name: small
+  network: default
+  size: 1
+  stemcell:
+    name: bosh-warden-boshlite-ubuntu-lucid-go_agent
+    version: latest
+  cloud_properties: {}
+update:
+  canaries: 1
+  canary_watch_time: 1000-30000
+  max_in_flight: 50
+  update_watch_time: 1000-30000
+jobs:
+- name: apache2
+  template: apache2
+  resource_pool: small
+  instances: 1
+  networks:
+  - name: default
+    static_ips:
+    - 10.244.2.230

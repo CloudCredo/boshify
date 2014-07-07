@@ -83,7 +83,8 @@ module Boshify
     end
 
     def build_path(source_tarball)
-      files = @cmd_runner.run("tar -ztf #{source_tarball}").split("\n")
+      files = @cmd_runner.run("tar -ztf #{source_tarball}",
+                              quiet: true)[:stdout].split("\n")
       directory_with_configure(files.map { |p| Pathname.new(p) })
     end
 

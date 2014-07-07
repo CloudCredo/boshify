@@ -1,6 +1,7 @@
 require 'uri'
 module Boshify
   class PackageNotFoundError < StandardError; end
+  class InvalidPackageMetadataError < StandardError; end
 
   # Ubuntu package source
   class UbuntuPackages
@@ -48,7 +49,12 @@ module Boshify
     end
 
     def decompress(local_path)
-      @cmd_runner.run("bzcat #{local_path}")
+      result = @cmd_runner.run("bzcat #{local_path}", quiet: true)
+      if result[:exit_code] != 0
+        fail InvalidPackageMetadataError,
+             "Could not decompress: #{result[:stderr]}"
+      end
+      result[:stdout]
     end
 
     FILE_KEYS = %w(Files Checksums-Sha1 Checksums-Sha256)

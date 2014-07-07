@@ -1,6 +1,7 @@
 require 'tempfile'
-require_relative '../../lib/boshify/filesystem'
+require_relative '../../../lib/boshify/filesystem'
 
+# Filesystem operations
 module Boshify
   describe Filesystem do
     describe '#copy' do
@@ -30,7 +31,8 @@ module Boshify
           allow(File).to receive(:open).and_yield(f)
           allow(f).to receive(:write).with('file content')
           allow(path).to receive(:cleanpath).and_return('/a/path')
-          result = Filesystem.new.write_file(path: path, content: 'file content')
+          result = Filesystem.new.write_file(path: path,
+                                             content: 'file content')
           expect(result).to eq(path)
         end
       end
@@ -50,7 +52,8 @@ module Boshify
           allow(path).to receive(:basename).and_return('postgresql-8.4.tar.gz')
           allow(File).to receive(:open).and_yield(f)
           allow(f).to receive(:write).with('file content')
-          result = Filesystem.new.write_file(basename: path, content: 'file content')
+          result = Filesystem.new.write_file(basename: path,
+                                             content: 'file content')
           expect(result.basename.to_s).to eq('postgresql-8.4.tar.gz')
         end
       end
@@ -58,7 +61,8 @@ module Boshify
         it 'raises an error' do
           expect do
             Filesystem.new.write_file(content: 'file content')
-          end.to raise_error(ArgumentError, 'Either basename or path must be specified')
+          end.to raise_error(ArgumentError,
+                             'Either basename or path must be specified')
         end
       end
       context 'when the content is not specified' do

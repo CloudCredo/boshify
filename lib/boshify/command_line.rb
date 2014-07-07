@@ -20,9 +20,10 @@ module Boshify
         begin
           use_mirror_if_specified(options[:mirror])
           @package_converter.create_release_for(name: options[:package])
-          { exit_code: 0, stdout: "Package #{options[:package]} converted" }
+          { exit_code: 0, stdout: "Package #{options[:package]} converted",
+            stderr: '' }
         rescue => e
-          { exit_code: 1, stdout: e.message }
+          { exit_code: 1, stdout: '', stderr: e.message }
         end
       end
     end
@@ -34,10 +35,10 @@ module Boshify
       if options[:package]
         yield options
       else
-        { exit_code: 0, stdout: @parser.help }
+        { exit_code: 0, stdout: @parser.help, stderr: '' }
       end
       rescue OptionParser::MissingArgument
-        { exit_code: 1, stdout: @parser.help }
+        { exit_code: 1, stdout: @parser.help, stderr: '' }
     end
 
     def use_mirror_if_specified(mirror_url)
